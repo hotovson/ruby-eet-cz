@@ -14,9 +14,13 @@ module EET_CZ
     end
 
     def run
-      response = client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: [header, data, footer].reduce({}, :merge))
+      response = client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: message)
       EET_CZ::Response.new(response.doc)
       # TODO: error handling (Net::HTTP, etc..)
+    end
+
+    def message
+      [header, data, footer].reduce({}, :merge)
     end
 
     def header

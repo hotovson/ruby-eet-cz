@@ -2,8 +2,6 @@
 module EET_CZ
   module Response
     class Error < Base
-      attr_reader :dat_odmit, :kod, :error
-
       def success?
         test? && kod.zero?
       end

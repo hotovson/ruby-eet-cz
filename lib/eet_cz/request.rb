@@ -7,7 +7,6 @@ module EET_CZ
     # @prvni_zaslani: true=first try; false=retry
     def initialize(receipt, options = {})
       raise('certificate not found') if EET_CZ.config.ssl_cert_file.blank?
-      raise('ssh key not found') if EET_CZ.config.ssl_cert_key_file.blank?
       @receipt = receipt
       @options = options
       @client  = EET_CZ::Client.instance
@@ -15,7 +14,7 @@ module EET_CZ
 
     def run
       response = client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: message)
-      EET_CZ::Response.new(response.doc)
+      EET_CZ::Response::Base.parse(response.doc)
       # TODO: error handling (Net::HTTP, etc..)
     end
 
@@ -29,7 +28,7 @@ module EET_CZ
           '@uuid_zpravy' => receipt.uuid_zpravy, # RFC 4122
           '@dat_odesl'     => receipt.dat_trzby, # ISO 8601
           '@prvni_zaslani' => prvni_zaslani, # true=first try; false=retry
-          '@overeni'       => EET_CZ.config.overeni || true # true=testing mode; false=production mode!
+          '@overeni'       => overeni # true=testing mode; false=production mode!
         }
       }
     end
@@ -110,6 +109,10 @@ module EET_CZ
 
     def prvni_zaslani
       options[:prvni_zaslani] || true
+    end
+
+    def overeni
+      EET_CZ.config.overeni == false ? false : EET_CZ.config.overeni || true
     end
   end
 end

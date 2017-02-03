@@ -38,12 +38,19 @@ module EET_CZ
         'eet:Data' => {
           '@dic_popl' => EET_CZ.config.dic_popl,
           '@id_provoz'  => id_provoz,
-          '@id_pokl'    => receipt.id_pokl,
+          '@id_pokl'    => id_pokl,
           '@porad_cis'  => receipt.porad_cis,
           '@dat_trzby'  => receipt.dat_trzby,
           '@celk_trzba' => receipt.celk_trzba,
+          '@zakl_nepodl_dph' => receipt.zakl_nepodl_dph,
+          '@zakl_dan1'  => receipt.zakl_dan1,
+          '@dan1'       => receipt.dan1,
+          '@zakl_dan2'  => receipt.zakl_dan2,
+          '@dan2'       => receipt.dan2,
+          '@zakl_dan3'  => receipt.zakl_dan3,
+          '@dan3'       => receipt.dan3,
           '@rezim'      => EET_CZ.config.rezim || '0' # 0 - bezny rezim, 1 - zjednoduseny rezim
-        }
+        }.reject { |_, v| v == '0.00' }
       }
     end
 

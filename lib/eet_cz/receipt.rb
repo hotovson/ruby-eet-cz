@@ -4,11 +4,15 @@ module EET_CZ
     include ActiveModel::Validations
 
     VALID_FORMAT = %r(\A[0-9a-zA-Z\.,:;\/#\-_]{1,20}\z)
+    NUMERIC_ATTRIBUTES = [
+      :celk_trzba,
+      :zakl_nepodl_dph,
+      :zakl_dan1, :dan1,
+      :zakl_dan2, :dan2,
+      :zakl_dan3, :dan3
+    ].freeze
 
-    # ID pokladny
-    attr_reader :id_pokl
-    # ID dokladu/uctenky
-    attr_reader :porad_cis
+    attr_reader :id_pokl, :porad_cis
 
     validates :id_pokl, presence: true, format: VALID_FORMAT
     validates :porad_cis, presence: true, format: VALID_FORMAT
@@ -25,12 +29,23 @@ module EET_CZ
       @uuid_zpravy ||= SecureRandom.uuid
     end
 
-    def celk_trzba
-      format('%.2f', @celk_trzba.to_f)
-    end
-
     def dat_trzby
       (@dat_trzby || Time.current).iso8601
+    end
+
+    def method_missing(name, *args, &block)
+      return formated_numeric(name) if NUMERIC_ATTRIBUTES.include?(name)
+      super
+    end
+
+    def respond_to_missing?
+      true
+    end
+
+    private
+
+    def formated_numeric(attribute)
+      format('%.2f', instance_variable_get("@#{attribute}").to_f)
     end
   end
 end

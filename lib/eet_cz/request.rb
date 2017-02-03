@@ -91,7 +91,7 @@ module EET_CZ
     def plain_text
       [EET_CZ.config.dic_popl,
        id_provoz,
-       receipt.id_pokl,
+       id_pokl,
        receipt.porad_cis,
        receipt.dat_trzby,
        receipt.celk_trzba].join('|')
@@ -112,6 +112,10 @@ module EET_CZ
 
     def id_provoz
       options[:id_provoz] || EET_CZ.config.id_provoz
+    end
+
+    def id_pokl
+      receipt.id_pokl || options[:id_pokl] || EET_CZ.config.id_pokl
     end
 
     def prvni_zaslani

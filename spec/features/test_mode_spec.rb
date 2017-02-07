@@ -36,7 +36,7 @@ describe 'overeni' do
       end
 
       context 'valid request' do
-        it 'success warning' do
+        it 'returns proper warning when invalid VAT is used' do
           EET_CZ.configure do |config|
             config.dic_popl = 'CZ1212121218'
           end
@@ -51,7 +51,7 @@ describe 'overeni' do
           expect(response).to be_test
         end
 
-        it 'success' do
+        it 'register receipt with success' do
           response = do_request('trzba/test_mode/play_ground/valid')
           expect(response).to be_an_instance_of(EET_CZ::Response::Error)
           expect(response.kod).to eq(0)
@@ -69,7 +69,7 @@ describe 'overeni' do
           end
         end
 
-        it 'invalid' do
+        it 'is invalid' do
           response = do_request('trzba/test_mode/play_ground/invalid')
           expect(response).to be_an_instance_of(EET_CZ::Response::Error)
           expect(response.kod).to eq(3)
@@ -87,17 +87,6 @@ describe 'overeni' do
         end
       end
 
-      xcontext 'valid request' do # Due to a valid SSL certificate
-        it 'valid request' do
-          response = do_request('trzba/test_mode/production/valid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
-          expect(response.kod).to eq(0)
-          expect(response.dat_odmit).to be_present
-          expect(response).to be_success
-          expect(response).not_to be_test
-        end
-      end
-
       context 'invalid request' do
         before(:each) do
           EET_CZ.configure do |config|
@@ -105,7 +94,7 @@ describe 'overeni' do
           end
         end
 
-        it 'not valid' do
+        it 'is invalid' do
           response = do_request('trzba/test_mode/production/invalid')
           expect(response).to be_an_instance_of(EET_CZ::Response::Error)
           expect(response.kod).to eq(3)

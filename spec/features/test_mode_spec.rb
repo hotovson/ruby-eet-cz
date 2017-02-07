@@ -41,7 +41,7 @@ describe 'overeni' do
             config.dic_popl = 'CZ1212121218'
           end
           response = do_request('trzba/test_mode/play_ground/valid-warning')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response.kod).to eq(0)
           expect(response.dat_odmit).to be_present
           expect(response.warnings.count).to eq(1)
@@ -53,7 +53,7 @@ describe 'overeni' do
 
         it 'register receipt with success' do
           response = do_request('trzba/test_mode/play_ground/valid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response.kod).to eq(0)
           expect(response.dat_odmit).to be_present
           expect(response.warnings).not_to be_present
@@ -71,7 +71,7 @@ describe 'overeni' do
 
         it 'is invalid' do
           response = do_request('trzba/test_mode/play_ground/invalid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response.kod).to eq(3)
           expect(response.dat_odmit).to be_present
           expect(response).not_to be_success
@@ -96,7 +96,7 @@ describe 'overeni' do
 
         it 'is invalid' do
           response = do_request('trzba/test_mode/production/invalid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response.kod).to eq(3)
           expect(response.dat_odmit).to be_present
           expect(response).not_to be_success

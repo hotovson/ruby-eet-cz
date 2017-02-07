@@ -34,7 +34,7 @@ describe 'real mode' do
       context 'valid request' do
         it 'success' do
           response = do_request('trzba/real_mode/play_ground/valid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Success)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response).to be_success
           expect(response).to be_test
           expect(response.dat_prij).to be_present
@@ -52,7 +52,7 @@ describe 'real mode' do
 
         it 'invalid request' do
           response = do_request('trzba/real_mode/play_ground/invalid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response).to be_test
           expect(response).not_to be_success
           expect(response.dat_odmit).to be_present
@@ -76,7 +76,7 @@ describe 'real mode' do
 
         it 'invalid request' do
           response = do_request('trzba/real_mode/production/invalid')
-          expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+          expect(response).to be_an_instance_of(EET_CZ::Response)
           expect(response).not_to be_success
           expect(response).not_to be_test
         end

@@ -19,7 +19,7 @@ module EET_CZ
 
     def run
       response = soap_client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: message)
-      EET_CZ::Response::Base.parse(response.doc)
+      EET_CZ::Response.parse(response.doc)
     rescue Savon::HTTPError => e
       raise HTTPError, e.to_s
     rescue Savon::SOAPFault => e

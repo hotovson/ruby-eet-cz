@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe EET_CZ::Response::Base do
-  let(:response) { EET_CZ::Response::Base.parse(Nokogiri::XML(xml)) }
+describe EET_CZ::Response do
+  let(:response) { EET_CZ::Response.parse(Nokogiri::XML(xml)) }
 
-  context 'fault' do
+  context 'fault xml response' do
     let(:xml) { fault_xml }
 
     it 'returns instance' do
-      expect(response).to be_an_instance_of(EET_CZ::Response::Error)
+      expect(response).to be_an_instance_of(EET_CZ::Response)
       expect(response).not_to be_success
     end
 
@@ -33,11 +33,11 @@ describe EET_CZ::Response::Base do
     end
   end
 
-  context 'success' do
+  context 'success xml response' do
     let(:xml) { success_xml }
 
     it 'returns instance' do
-      expect(response).to be_an_instance_of(EET_CZ::Response::Success)
+      expect(response).to be_an_instance_of(EET_CZ::Response)
       expect(response).to be_success
     end
 

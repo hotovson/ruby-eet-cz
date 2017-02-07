@@ -2,17 +2,18 @@
 
 module EET_CZ
   class Response
-    attr_reader :doc, :uuid_zpravy, :bkp, :warnings,
-                :fik, :dat_prij,
-                :dat_odmit, :kod, :error
+    attr_reader :attributes, :doc
 
     def self.parse(xml_response)
       xml_response.remove_namespaces!
       doc = xml_response.at('Odpoved')
-      new(doc).parse
+      new(doc).send :parse
     end
 
+    private
+
     def initialize(doc)
+      @attributes = OpenStruct.new
       @doc = doc
     end
 
@@ -20,13 +21,13 @@ module EET_CZ
       parse_warnings
       parse_header
       parse_data
-      self
+      attributes
     end
 
     def parse_warnings
-      @warnings = []
+      attributes.warnings = []
       doc.search('Varovani').each do |warning|
-        @warnings << parse_warning(warning)
+        attributes.warnings << parse_warning(warning)
       end
     end
 
@@ -38,8 +39,8 @@ module EET_CZ
     end
 
     def parse_header
-      @uuid_zpravy = header_attribute('uuid_zpravy')
-      @bkp         = header_attribute('bkp')
+      attributes.uuid_zpravy = header_attribute('uuid_zpravy')
+      attributes.bkp         = header_attribute('bkp')
     end
 
     def header_attribute(attr)
@@ -47,12 +48,13 @@ module EET_CZ
     end
 
     def parse_data
-      @test     = inner_doc.attributes['test'].try(:value)
-      @fik      = inner_doc.attributes['fik'].try(:value)
-      @kod       = inner_doc.attributes['kod'].try(:value).try(:to_i)
-      @error     = inner_doc.text
-      @dat_prij = header_attribute('dat_prij')
-      @dat_odmit = header_attribute('dat_odmit')
+      attributes.fik        = inner_doc.attributes['fik'].try(:value)
+      attributes.kod        = inner_doc.attributes['kod'].try(:value).try(:to_i)
+      attributes.error      = inner_doc.text
+      attributes.dat_prij   = header_attribute('dat_prij')
+      attributes.dat_odmit  = header_attribute('dat_odmit')
+      attributes[:test?]    = inner_doc.attributes['test'].try(:value) == 'true'
+      attributes[:success?] = with_success? || (with_error? && attributes.kod.zero? && attributes.test?)
     end
 
     def inner_doc
@@ -65,15 +67,6 @@ module EET_CZ
 
     def with_error?
       doc.at('Chyba').present?
-    end
-
-    # If request was sent to Playground Endpoint
-    def test?
-      @test.present?
-    end
-
-    def success?
-      with_success? || (with_error? && kod.zero? && test?)
     end
   end
 end

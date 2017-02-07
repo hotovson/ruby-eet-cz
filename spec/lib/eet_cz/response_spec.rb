@@ -7,11 +7,6 @@ describe EET_CZ::Response do
   context 'fault xml response' do
     let(:xml) { fault_xml }
 
-    it 'returns instance' do
-      expect(response).to be_an_instance_of(EET_CZ::Response)
-      expect(response).not_to be_success
-    end
-
     it 'returns error' do
       expect(response.kod).to eq(4)
       expect(response.test?).to eq(true)
@@ -35,11 +30,6 @@ describe EET_CZ::Response do
 
   context 'success xml response' do
     let(:xml) { success_xml }
-
-    it 'returns instance' do
-      expect(response).to be_an_instance_of(EET_CZ::Response)
-      expect(response).to be_success
-    end
 
     it 'returns fik' do
       expect(response.fik).to eq('fbfef3cf-ab44-4e5b-b1f5-16eccc2d9485-ff')

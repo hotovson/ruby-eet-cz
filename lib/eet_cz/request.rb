@@ -3,7 +3,6 @@ module EET_CZ
   class Error < StandardError; end
   class HTTPError < Error; end
   class SOAPError < Error; end
-  class EETError < Error; end
 
   class Request
     attr_reader :receipt, :soap_client, :options

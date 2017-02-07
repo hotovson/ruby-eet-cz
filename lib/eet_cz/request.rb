@@ -1,21 +1,29 @@
 # frozen_string_literal: true
 module EET_CZ
+  class Error < StandardError; end
+  class HTTPError < Error; end
+  class SOAPError < Error; end
+  class EETError < Error; end
+
   class Request
-    attr_reader :receipt, :client, :options
+    attr_reader :receipt, :soap_client, :options
 
     # options:
     # @prvni_zaslani: true=first try; false=retry
-    def initialize(receipt, options = {})
+    def initialize(receipt, options = {}, soap_client = SOAPClient.client)
       raise('certificate not found') if EET_CZ.config.ssl_cert_file.blank?
       @receipt = receipt
       @options = options
-      @client  = EET_CZ::Client.instance
+      @soap_client = soap_client
     end
 
     def run
-      response = client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: message)
+      response = soap_client.call('Trzba', soap_action: 'http://fs.mfcr.cz/eet/OdeslaniTrzby', message: message)
       EET_CZ::Response::Base.parse(response.doc)
-      # TODO: error handling (Net::HTTP, etc..)
+    rescue Savon::HTTPError => e
+      raise HTTPError, e.to_s
+    rescue Savon::SOAPFault => e
+      raise SOAPError, e.to_s
     end
 
     def message

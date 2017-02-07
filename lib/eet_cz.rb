@@ -10,7 +10,7 @@ require 'eet_cz/response/base'
 require 'eet_cz/response/error'
 require 'eet_cz/response/success'
 require 'eet_cz/response/warning'
-require 'eet_cz/client'
+require 'eet_cz/soap_client'
 require 'eet_cz/akami_patch'
 
 module EET_CZ

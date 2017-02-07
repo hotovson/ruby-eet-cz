@@ -70,10 +70,10 @@ szSOdqlAdkey7M6m12AQW0LkBSPqPUi3NWa+Flo9xAPRyEKA49EQpndngu+kgPncElIfczSyhWOdQVq3
   end
 
   context 'client' do
-    let(:client) { request.client }
+    let(:soap_client) { request.soap_client }
 
     it 'returns instance' do
-      expect(client).to be_an_instance_of(Savon::Client)
+      expect(soap_client).to be_an_instance_of(Savon::Client)
     end
   end
 end

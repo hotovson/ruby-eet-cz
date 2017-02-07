@@ -27,8 +27,6 @@ describe 'error handling' do
     expect { request.run }.to raise_error(EET_CZ::SOAPError)
   end
 
-  it 'raises '
-
   private
 
   def soap_fault_xml

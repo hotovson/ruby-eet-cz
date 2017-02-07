@@ -7,9 +7,7 @@ AllCops:
     - 'bin/**/*'
     - 'lib/eet_cz/akami_patch.rb'
 Metrics/LineLength:
- Max: 180
-Metrics/MethodLength:
- Max: 80
+ Max: 120
 Documentation:
  Enabled: false
 Style/ClassAndModuleCamelCase:

@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe EET_CZ::Response do
-  let(:response) { EET_CZ::Response.parse(Nokogiri::XML(xml)) }
+  let(:response) { EET_CZ::Response.parse(Nokogiri::XML(xml)).attributes }
 
   context 'fault xml response' do
     let(:xml) { fault_xml }

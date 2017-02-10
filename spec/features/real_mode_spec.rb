@@ -33,7 +33,7 @@ describe 'real mode' do
 
       context 'valid request' do
         it 'success' do
-          response = do_request('trzba/real_mode/play_ground/valid')
+          response = do_request('trzba/real_mode/play_ground/valid').attributes
           expect(response).to be_success
           expect(response).to be_test
           expect(response.dat_prij).to be_present
@@ -50,7 +50,7 @@ describe 'real mode' do
         end
 
         it 'invalid request' do
-          response = do_request('trzba/real_mode/play_ground/invalid')
+          response = do_request('trzba/real_mode/play_ground/invalid').attributes
           expect(response).to be_test
           expect(response).not_to be_success
           expect(response.dat_odmit).to be_present
@@ -73,7 +73,7 @@ describe 'real mode' do
         end
 
         it 'invalid request' do
-          response = do_request('trzba/real_mode/production/invalid')
+          response = do_request('trzba/real_mode/production/invalid').attributes
           expect(response).not_to be_success
           expect(response).not_to be_test
         end

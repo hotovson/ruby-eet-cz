@@ -4,6 +4,7 @@ require 'active_model'
 require 'savon'
 
 require 'eet_cz/version'
+require 'eet_cz/constants'
 require 'eet_cz/receipt'
 require 'eet_cz/request'
 require 'eet_cz/response'

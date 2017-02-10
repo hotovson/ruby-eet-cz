@@ -40,7 +40,7 @@ describe 'overeni' do
           EET_CZ.configure do |config|
             config.dic_popl = 'CZ1212121218'
           end
-          response = do_request('trzba/test_mode/play_ground/valid-warning')
+          response = do_request('trzba/test_mode/play_ground/valid-warning').attributes
           expect(response.kod).to eq(0)
           expect(response.dat_odmit).to be_present
           expect(response.warnings.count).to eq(1)
@@ -51,7 +51,7 @@ describe 'overeni' do
         end
 
         it 'register receipt with success' do
-          response = do_request('trzba/test_mode/play_ground/valid')
+          response = do_request('trzba/test_mode/play_ground/valid').attributes
           expect(response.kod).to eq(0)
           expect(response.dat_odmit).to be_present
           expect(response.warnings).not_to be_present
@@ -68,7 +68,7 @@ describe 'overeni' do
         end
 
         it 'is invalid' do
-          response = do_request('trzba/test_mode/play_ground/invalid')
+          response = do_request('trzba/test_mode/play_ground/invalid').attributes
           expect(response.kod).to eq(3)
           expect(response.dat_odmit).to be_present
           expect(response).not_to be_success
@@ -92,7 +92,7 @@ describe 'overeni' do
         end
 
         it 'is invalid' do
-          response = do_request('trzba/test_mode/production/invalid')
+          response = do_request('trzba/test_mode/production/invalid').attributes
           expect(response.kod).to eq(3)
           expect(response.dat_odmit).to be_present
           expect(response).not_to be_success

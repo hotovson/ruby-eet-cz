@@ -13,15 +13,15 @@ module EET_CZ
     private
 
     def initialize(doc)
-      @attributes = OpenStruct.new
       @doc = doc
+      @attributes = OpenStruct.new
     end
 
     def parse
       parse_warnings
       parse_header
       parse_data
-      attributes
+      self
     end
 
     def parse_warnings
@@ -48,11 +48,11 @@ module EET_CZ
     end
 
     def parse_data
+      attributes.dat_prij   = header_attribute('dat_prij')
+      attributes.dat_odmit  = header_attribute('dat_odmit')
       attributes.fik        = inner_doc.attributes['fik'].try(:value)
       attributes.kod        = inner_doc.attributes['kod'].try(:value).try(:to_i)
       attributes.error      = inner_doc.text
-      attributes.dat_prij   = header_attribute('dat_prij')
-      attributes.dat_odmit  = header_attribute('dat_odmit')
       attributes[:test?]    = inner_doc.attributes['test'].try(:value) == 'true'
       attributes[:success?] = with_success? || (with_error? && attributes.kod.zero? && attributes.test?)
     end

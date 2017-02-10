@@ -1,10 +1,13 @@
 # frozen_string_literal: true
+
 module EET_CZ
   class Error < StandardError; end
   class HTTPError < Error; end
   class SOAPError < Error; end
 
   class Request
+    include Constants
+
     attr_reader :receipt, :soap_client, :options
 
     # options:
@@ -30,35 +33,11 @@ module EET_CZ
     end
 
     def header
-      {
-        'eet:Hlavicka' => {
-          '@uuid_zpravy' => receipt.uuid_zpravy, # RFC 4122
-          '@dat_odesl'     => receipt.dat_trzby, # ISO 8601
-          '@prvni_zaslani' => prvni_zaslani, # true=first try; false=retry
-          '@overeni'       => overeni # true=testing mode; false=production mode!
-        }
-      }
+      { 'eet:Hlavicka' => format_attributes(HEADER_ATTRIBUTES) }
     end
 
     def data
-      {
-        'eet:Data' => {
-          '@dic_popl' => EET_CZ.config.dic_popl,
-          '@id_provoz'  => id_provoz,
-          '@id_pokl'    => id_pokl,
-          '@porad_cis'  => receipt.porad_cis,
-          '@dat_trzby'  => receipt.dat_trzby,
-          '@celk_trzba' => receipt.celk_trzba,
-          '@zakl_nepodl_dph' => receipt.zakl_nepodl_dph,
-          '@zakl_dan1'  => receipt.zakl_dan1,
-          '@dan1'       => receipt.dan1,
-          '@zakl_dan2'  => receipt.zakl_dan2,
-          '@dan2'       => receipt.dan2,
-          '@zakl_dan3'  => receipt.zakl_dan3,
-          '@dan3'       => receipt.dan3,
-          '@rezim'      => EET_CZ.config.rezim || '0' # 0 - bezny rezim, 1 - zjednoduseny rezim
-        }.reject { |_, v| v == '0.00' }
-      }
+      { 'eet:Data' => compacted(format_attributes(DATA_ATTRIBUTES)) }
     end
 
     def footer
@@ -68,69 +47,26 @@ module EET_CZ
             '@digest' => 'SHA256',
             '@cipher'   => 'RSA2048',
             '@encoding' => 'base64',
-            :content!   => pkp
+            :content!   => receipt.pkp
           },
           'eet:bkp' => {
             '@digest'   => 'SHA1',
             '@encoding' => 'base16',
-            :content!   => bkp
+            :content!   => receipt.bkp
           }
         }
       }
     end
 
-    # @return base64 signed text from plain_text.
-    # plain_text consists of:
-    # DIC|ID_PROVOZ|ID_POKL|PORAD_CISL|DATUM|CENA
-    # i.e: "CZ72080043|181|00/2535/CN58|0/2482/IE25|2016-12-07T22:01:00+01:00|87988.00"
-    def pkp
-      Base64.strict_encode64(private_key.sign(OpenSSL::Digest::SHA256.new, plain_text))
-    end
-
-    # Digest from pkp
-    # i.e: '03ec1d0e-6d9f77fb-1d798ccb-f4739666-a4069bc3'
-    def bkp(base64_pkp = pkp)
-      Digest::SHA1.hexdigest(Base64.strict_decode64(base64_pkp)).upcase.scan(/.{8}/).join('-')
-    end
-
     private
 
-    def plain_text
-      [EET_CZ.config.dic_popl,
-       id_provoz,
-       id_pokl,
-       receipt.porad_cis,
-       receipt.dat_trzby,
-       receipt.celk_trzba].join('|')
+    def format_attributes(attributes)
+      attrs = attributes.map { |atr| ["@#{atr}", receipt.send(atr)] }.flatten
+      Hash[*attrs]
     end
 
-    def private_key
-      case cert_key_type
-      when 'p12'
-        OpenSSL::PKCS12.new(File.read(EET_CZ.config.ssl_cert_key_file), EET_CZ.config.ssl_cert_key_password).key
-      when 'pem'
-        OpenSSL::PKey::RSA.new(File.read(EET_CZ.config.ssl_cert_key_file), EET_CZ.config.ssl_cert_key_password)
-      end
-    end
-
-    def cert_key_type
-      EET_CZ.config.ssl_cert_key_file.split('.').last || 'p12'
-    end
-
-    def id_provoz
-      options[:id_provoz] || EET_CZ.config.id_provoz
-    end
-
-    def id_pokl
-      receipt.id_pokl || options[:id_pokl] || EET_CZ.config.id_pokl
-    end
-
-    def prvni_zaslani
-      options[:prvni_zaslani] || true
-    end
-
-    def overeni
-      EET_CZ.config.overeni == false ? false : EET_CZ.config.overeni || true
+    def compacted(attributes)
+      attributes.reject { |_, v| v.blank? || v == '0.00' }
     end
   end
 end

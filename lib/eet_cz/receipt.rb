@@ -92,8 +92,8 @@ module EET_CZ
         overeni: EET_CZ.config[:overeni] == 'false' ? 'false' : 'true',
         prvni_zaslani: 'true',
         uuid_zpravy: SecureRandom.uuid,
-        dat_trzby: Time.now,
-        dat_odesl: Time.now,
+        dat_trzby: formated_datetime(Time.now),
+        dat_odesl: formated_datetime(Time.now),
         dic_popl: EET_CZ.config[:dic_popl],
         rezim: EET_CZ.config[:rezim] == '1' ? '1' : '0'
       }

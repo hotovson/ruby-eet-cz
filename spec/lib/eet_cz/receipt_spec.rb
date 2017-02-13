@@ -13,13 +13,27 @@ describe EET_CZ::Receipt do
       expect(receipt).not_to be_valid
     end
 
-    it 'has missing attributes id_pokl, porad_cis' do
+    it 'has missing attributes id_pokl, porad_cis, celk_trzba' do
       receipt.valid?
-      expect(receipt.errors.keys).to match %i(id_pokl porad_cis dat_trzby dat_odesl celk_trzba)
+      expect(receipt.errors.keys).to match %i(id_pokl porad_cis celk_trzba)
     end
 
     it 'has overeni = true as default' do
       expect(receipt.overeni).to eq 'true'
+    end
+  end
+
+  context 'receipt with minimal attributes' do
+    let(:receipt) do
+      EET_CZ::Receipt.new(
+        id_pokl: '/5546/RO24',
+        porad_cis: '0/6460/ZQ42',
+        celk_trzba: 34_113.00
+      )
+    end
+
+    it 'is valid' do
+      expect(receipt).to be_valid
     end
   end
 

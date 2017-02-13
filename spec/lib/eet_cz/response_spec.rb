@@ -10,7 +10,7 @@ describe EET_CZ::Response do
     it 'returns error' do
       expect(response.kod).to eq(4)
       expect(response.test?).to eq(true)
-      expect(response.error).to eq('Neplatny podpis SOAP zpravy')
+      expect(response.chyba).to eq('Neplatny podpis SOAP zpravy')
     end
 
     it 'returns header' do

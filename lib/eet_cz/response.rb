@@ -52,7 +52,7 @@ module EET_CZ
       attributes.dat_odmit  = header_attribute('dat_odmit')
       attributes.fik        = inner_doc.attributes['fik'].try(:value)
       attributes.kod        = inner_doc.attributes['kod'].try(:value).try(:to_i)
-      attributes.error      = inner_doc.text
+      attributes.chyba      = inner_doc.text
       attributes[:test?]    = inner_doc.attributes['test'].try(:value) == 'true'
       attributes[:success?] = with_success? || (with_error? && attributes.kod.zero? && attributes.test?)
     end

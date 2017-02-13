@@ -34,7 +34,7 @@ module EET_CZ
 
     def initialize(attrs = {})
       @attributes = OpenStruct.new(defaults)
-      attrs.each do |key, value|
+      attrs.to_h.each do |key, value|
         send("#{key}=", value)
       end
     end

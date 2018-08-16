@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe 'overeni' do
   let(:receipt) do
-    EET_CZ::Receipt.new(dat_trzby:  Time.parse('2016-08-05T00:30:12+02:00'),
+    EET_CZ::Receipt.new(dat_trzby:  Time.parse('2018-08-05T00:30:12+02:00'),
                         id_pokl:    '/5546/RO24',
                         porad_cis:  '0/6460/ZQ42',
                         celk_trzba: 34_113.00)

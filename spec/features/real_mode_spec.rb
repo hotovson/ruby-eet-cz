@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe 'real mode' do
   let(:receipt) do
-    EET_CZ::Receipt.new(dat_trzby:  Time.parse('2016-08-05T00:30:12+02:00'),
+    EET_CZ::Receipt.new(dat_trzby:  Time.parse('2018-08-05T00:30:12+02:00'),
                         id_pokl:    '/5546/RO24',
                         porad_cis:  '0/6460/ZQ42',
                         celk_trzba: 34_113.00)
@@ -36,9 +36,9 @@ describe 'real mode' do
           response = do_request('trzba/real_mode/play_ground/valid').attributes
           expect(response).to be_success
           expect(response).to be_test
-          expect(response.dat_prij).to be_present
           expect(response.warnings).not_to be_present
-          expect(response.fik).to eq('92d9da29-6515-4446-87a2-c1497c561534-ff')
+          expect(response.kod).to eq 0
+          expect(response.chyba).to eq 'Datovou zpravu evidovane trzby v overovacim modu se podarilo zpracovat'
         end
       end
 

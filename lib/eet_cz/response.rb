@@ -33,7 +33,7 @@ module EET_CZ
 
     def parse_warning(warning)
       OpenStruct.new(
-        kod: warning.attributes['kod_varov'].try(:value).try(:to_i),
+        kod: warning.attributes['kod_varov']&.value&.to_i,
         text: warning.text.squish
       )
     end
@@ -44,16 +44,16 @@ module EET_CZ
     end
 
     def header_attribute(attr)
-      doc.at('Hlavicka').attributes[attr].try(:value)
+      doc.at('Hlavicka').attributes[attr]&.value
     end
 
     def parse_data
       attributes.dat_prij   = header_attribute('dat_prij')
       attributes.dat_odmit  = header_attribute('dat_odmit')
-      attributes.fik        = inner_doc.attributes['fik'].try(:value)
-      attributes.kod        = inner_doc.attributes['kod'].try(:value).try(:to_i)
+      attributes.fik        = inner_doc.attributes['fik']&.value
+      attributes.kod        = inner_doc.attributes['kod']&.value&.to_i
       attributes.chyba      = inner_doc.text
-      attributes[:test?]    = inner_doc.attributes['test'].try(:value) == 'true'
+      attributes[:test?]    = inner_doc.attributes['test']&.value == 'true'
       attributes[:success?] = with_success? || (with_error? && attributes.kod.zero? && attributes.test?)
     end
 
